@@ -10,14 +10,13 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/ergoapi/log/terminal"
 	"github.com/mgutz/ansi"
-	dockerterm "github.com/moby/term"
-	"k8s.io/kubectl/pkg/util/term"
 )
 
 const waitInterval = time.Millisecond * 150
 
-var _, tty = setupTTY(os.Stdin, os.Stdout)
+var tty = terminal.SetupTTY(os.Stdin, os.Stdout)
 
 type loadingText struct {
 	Stream         io.Writer
@@ -144,28 +143,4 @@ func (l *loadingText) Stop() {
 	}
 
 	_, _ = l.Stream.Write([]byte("\r"))
-}
-
-// setupTTY creates a term.TTY (docker)
-func setupTTY(stdin io.Reader, stdout io.Writer) (bool, term.TTY) {
-	t := term.TTY{
-		Out: stdout,
-		In:  stdin,
-	}
-
-	if !t.IsTerminalIn() {
-		return false, t
-	}
-
-	// if we get to here, the user wants to attach stdin, wants a TTY, and In is a terminal, so we
-	// can safely set t.Raw to true
-	t.Raw = true
-
-	newStdin, newStdout, _ := dockerterm.StdStreams()
-	t.In = newStdin
-	if stdout != nil {
-		t.Out = newStdout
-	}
-
-	return true, t
 }

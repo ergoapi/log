@@ -3,7 +3,9 @@
 
 package log
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/sirupsen/logrus"
+)
 
 // Level type
 type logFunctionType uint32
