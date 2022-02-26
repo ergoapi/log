@@ -10,7 +10,7 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gotest.tools v2.2.0+incompatible
 	k8s.io/apimachinery v0.23.4
-	k8s.io/kubectl v0.23.3
+	k8s.io/kubectl v0.23.4
 )
 
 require (
@@ -43,8 +43,8 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	k8s.io/api v0.23.3 // indirect
-	k8s.io/client-go v0.23.3 // indirect
+	k8s.io/api v0.23.4 // indirect
+	k8s.io/client-go v0.23.4 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
