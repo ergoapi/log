@@ -9,7 +9,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gotest.tools v2.2.0+incompatible
-	k8s.io/apimachinery v0.23.4
+	k8s.io/apimachinery v0.23.5
 	k8s.io/kubectl v0.23.3
 )
 
