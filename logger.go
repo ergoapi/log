@@ -1,6 +1,3 @@
-// AGPL License
-// Copyright (c) 2021 ysicing <i@ysicing.me>
-
 package log
 
 import (
@@ -17,7 +14,6 @@ const (
 	warnFn
 	infoFn
 	debugFn
-	failFn
 	doneFn
 )
 
@@ -43,9 +39,6 @@ type Logger interface {
 
 	Done(args ...interface{})
 	Donef(format string, args ...interface{})
-
-	Fail(args ...interface{})
-	Failf(format string, args ...interface{})
 
 	StartWait(message string)
 	StopWait()

@@ -1,6 +1,3 @@
-// AGPL License
-// Copyright (c) 2021 ysicing <i@ysicing.me>
-
 package log
 
 import (
@@ -15,10 +12,10 @@ var defaultLog Logger = &stdoutLogger{
 }
 
 // StartFileLogging logs the output of the global logger to the file default.log
-func StartFileLogging() {
+func StartFileLogging(filedir, filename string) {
 	defaultLogStdout, ok := defaultLog.(*stdoutLogger)
 	if ok {
-		defaultLogStdout.fileLogger = GetFileLogger("default")
+		defaultLogStdout.fileLogger = GetFileLogger(filedir, filename)
 	}
 
 	OverrideRuntimeErrorHandler(false)

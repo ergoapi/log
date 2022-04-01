@@ -1,6 +1,3 @@
-// AGPL License
-// Copyright (c) 2021 ysicing <i@ysicing.me>
-
 package log
 
 import (
@@ -62,10 +59,6 @@ var fnStringTypeInformationMap = map[logFunctionType]*fnStringTypeInformation{
 	doneFn: {
 		tag:      "Done: ",
 		logLevel: logrus.InfoLevel,
-	},
-	failFn: {
-		tag:      "Fail: ",
-		logLevel: logrus.ErrorLevel,
 	},
 }
 
@@ -222,22 +215,6 @@ func (s *StreamLogger) Donef(format string, args ...interface{}) {
 	defer s.logMutex.Unlock()
 
 	s.writeMessage(doneFn, fmt.Sprintf(format, args...)+"\n")
-}
-
-// Fail implements interface
-func (s *StreamLogger) Fail(args ...interface{}) {
-	s.logMutex.Lock()
-	defer s.logMutex.Unlock()
-
-	s.writeMessage(failFn, fmt.Sprintln(args...))
-}
-
-// Failf implements interface
-func (s *StreamLogger) Failf(format string, args ...interface{}) {
-	s.logMutex.Lock()
-	defer s.logMutex.Unlock()
-
-	s.writeMessage(failFn, fmt.Sprintf(format, args...)+"\n")
 }
 
 // Print implements interface

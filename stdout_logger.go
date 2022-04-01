@@ -1,6 +1,3 @@
-// AGPL License
-// Copyright (c) 2021 ysicing <i@ysicing.me>
-
 package log
 
 import (
@@ -15,8 +12,6 @@ import (
 	"github.com/mgutz/ansi"
 	"github.com/sirupsen/logrus"
 )
-
-const ErgoLogTimestamps = "ERGO_LOG_TIMESTAMPS"
 
 var stdout = goansi.NewAnsiStdout()
 var stderr = goansi.NewAnsiStderr()
@@ -57,19 +52,19 @@ var fnTypeInformationMap = map[logFunctionType]*fnTypeInformation{
 		stream:   stdout,
 	},
 	errorFn: {
-		tag:      "[error]  ",
+		tag:      "[error] X ",
 		color:    "red+b",
 		logLevel: logrus.ErrorLevel,
 		stream:   stdout,
 	},
 	fatalFn: {
-		tag:      "[fatal]  ",
+		tag:      "[fatal] X ",
 		color:    "red+b",
 		logLevel: logrus.FatalLevel,
 		stream:   stdout,
 	},
 	panicFn: {
-		tag:      "[panic]  ",
+		tag:      "[panic] X ",
 		color:    "red+b",
 		logLevel: logrus.PanicLevel,
 		stream:   stderr,
@@ -78,12 +73,6 @@ var fnTypeInformationMap = map[logFunctionType]*fnTypeInformation{
 		tag:      "[done] √ ",
 		color:    "green+b",
 		logLevel: logrus.InfoLevel,
-		stream:   stdout,
-	},
-	failFn: {
-		tag:      "[fail] X ",
-		color:    "red+b",
-		logLevel: logrus.ErrorLevel,
 		stream:   stdout,
 	},
 }
@@ -103,7 +92,7 @@ func (s *stdoutLogger) writeMessage(fnType logFunctionType, message string) {
 			s.loadingText.Stop()
 		}
 
-		if os.Getenv(ErgoLogTimestamps) == "true" || s.level == logrus.DebugLevel {
+		if s.level == logrus.DebugLevel {
 			now := time.Now()
 			_, _ = fnInformation.stream.Write([]byte(ansi.Color(formatInt(now.Hour())+":"+formatInt(now.Minute())+":"+formatInt(now.Second())+" ", "white+b")))
 		}
@@ -130,8 +119,6 @@ func (s *stdoutLogger) writeMessageToFileLogger(fnType logFunctionType, args ...
 			s.fileLogger.Debug(args...)
 		case warnFn:
 			s.fileLogger.Warn(args...)
-		case failFn:
-			s.fileLogger.Fail(args...)
 		case errorFn:
 			s.fileLogger.Error(args...)
 		case panicFn:
@@ -155,8 +142,6 @@ func (s *stdoutLogger) writeMessageToFileLoggerf(fnType logFunctionType, format 
 			s.fileLogger.Debugf(format, args...)
 		case warnFn:
 			s.fileLogger.Warnf(format, args...)
-		case failFn:
-			s.fileLogger.Failf(format, args...)
 		case errorFn:
 			s.fileLogger.Errorf(format, args...)
 		case panicFn:
@@ -340,22 +325,6 @@ func (s *stdoutLogger) Donef(format string, args ...interface{}) {
 	defer s.logMutex.Unlock()
 	s.writeMessage(doneFn, fmt.Sprintf(format, args...)+"\n")
 	s.writeMessageToFileLoggerf(doneFn, format, args...)
-}
-
-func (s *stdoutLogger) Fail(args ...interface{}) {
-	s.logMutex.Lock()
-	defer s.logMutex.Unlock()
-
-	s.writeMessage(failFn, fmt.Sprintln(args...))
-	s.writeMessageToFileLogger(failFn, args...)
-}
-
-func (s *stdoutLogger) Failf(format string, args ...interface{}) {
-	s.logMutex.Lock()
-	defer s.logMutex.Unlock()
-
-	s.writeMessage(failFn, fmt.Sprintf(format, args...)+"\n")
-	s.writeMessageToFileLoggerf(failFn, format, args...)
 }
 
 func (s *stdoutLogger) Print(level logrus.Level, args ...interface{}) {

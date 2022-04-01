@@ -11,8 +11,9 @@ import (
 )
 
 func main() {
-	flog := log.GetFileLogger("/tmp/ddd.log")
+	flog := log.GetInstance()
 	flog.SetLevel(logrus.DebugLevel)
+	log.StartFileLogging("/tmp", "test.log")
 	flog.StartWait("debug level")
 	flog.Debug("debug66666")
 	time.Sleep(time.Second * 2)
@@ -24,4 +25,7 @@ func main() {
 	time.Sleep(time.Second * 1)
 	flog.Info("hahahahahahah")
 	flog.StopWait()
+	flog.Done("done")
+	flog.Error("error")
+	flog.Fatal("fatal")
 }
