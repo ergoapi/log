@@ -52,7 +52,7 @@ var fnTypeInformationMap = map[logFunctionType]*fnTypeInformation{
 		stream:   stdout,
 	},
 	errorFn: {
-		tag:      "[error] X ",
+		tag:      "[error]  ",
 		color:    "red+b",
 		logLevel: logrus.ErrorLevel,
 		stream:   stdout,
@@ -96,7 +96,6 @@ func (s *stdoutLogger) writeMessage(fnType logFunctionType, message string) {
 			now := time.Now()
 			_, _ = fnInformation.stream.Write([]byte(ansi.Color(formatInt(now.Hour())+":"+formatInt(now.Minute())+":"+formatInt(now.Second())+" ", "white+b")))
 		}
-
 		_, _ = fnInformation.stream.Write([]byte(ansi.Color(fnInformation.tag, fnInformation.color)))
 		_, _ = fnInformation.stream.Write([]byte(message))
 

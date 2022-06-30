@@ -10,7 +10,21 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+func dolog() {
+	logfile := log.GetFileLogger("/tmp", "dofile1.log")
+	logfile.SetLevel(logrus.DebugLevel)
+	logfile.Debug("debug level")
+}
+
+func dolog2() {
+	logfile := log.GetFileLogger("/tmp", "dofile2.log")
+	logfile.SetLevel(logrus.DebugLevel)
+	logfile.Debug("debug level")
+}
+
 func main() {
+	dolog()
+	dolog2()
 	flog := log.GetInstance()
 	flog.SetLevel(logrus.DebugLevel)
 	log.StartFileLogging("/tmp", "test.log")

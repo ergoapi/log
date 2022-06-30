@@ -11,6 +11,9 @@ var defaultLog Logger = &stdoutLogger{
 	level: logrus.InfoLevel,
 }
 
+// Discard is a logger implementation that just discards every log statement
+var Discard = &DiscardLogger{}
+
 // StartFileLogging logs the output of the global logger to the file default.log
 func StartFileLogging(filedir, filename string) {
 	defaultLogStdout, ok := defaultLog.(*stdoutLogger)
@@ -18,7 +21,7 @@ func StartFileLogging(filedir, filename string) {
 		defaultLogStdout.fileLogger = GetFileLogger(filedir, filename)
 	}
 
-	OverrideRuntimeErrorHandler(false)
+	OverrideRuntimeErrorHandler(filedir, false)
 }
 
 // GetInstance returns the Logger instance
