@@ -3,14 +3,14 @@ module github.com/ergoapi/log
 go 1.18
 
 require (
-	github.com/ergoapi/util v0.2.21
+	github.com/ergoapi/util v0.2.23
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
 	github.com/sirupsen/logrus v1.9.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gotest.tools v2.2.0+incompatible
-	k8s.io/apimachinery v0.24.3
+	k8s.io/apimachinery v0.24.4
 	k8s.io/kubectl v0.23.6
 )
 
@@ -44,8 +44,8 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	k8s.io/api v0.24.3 // indirect
-	k8s.io/client-go v0.24.3 // indirect
+	k8s.io/api v0.24.4 // indirect
+	k8s.io/client-go v0.24.4 // indirect
 	k8s.io/klog/v2 v2.60.1 // indirect
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
