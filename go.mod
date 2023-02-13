@@ -8,7 +8,7 @@ require (
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/moby/term v0.0.0-20221128092401-c43b287e0e0f
 	github.com/sirupsen/logrus v1.9.0
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gotest.tools v2.2.0+incompatible
 	k8s.io/apimachinery v0.25.4
 	k8s.io/kubectl v0.25.4
