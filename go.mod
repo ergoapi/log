@@ -11,7 +11,7 @@ require (
 	github.com/moby/term v0.0.0-20220808134915-39b0c02b01ae
 	github.com/sirupsen/logrus v1.9.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	k8s.io/apimachinery v0.26.1
+	k8s.io/apimachinery v0.26.2
 	k8s.io/kubectl v0.26.1
 )
 
