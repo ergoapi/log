@@ -7,27 +7,45 @@ import (
 	"time"
 
 	"github.com/ergoapi/log"
+	"github.com/ergoapi/log/factory"
+	"github.com/ergoapi/log/survey"
 	"github.com/sirupsen/logrus"
 )
 
 func dolog() {
-	logfile := log.GetFileLogger("/tmp", "dofile1.log")
+	logfile := log.GetFileLogger("/tmp/dofile1.log")
 	logfile.SetLevel(logrus.DebugLevel)
 	logfile.Debug("debug level")
 }
 
 func dolog2() {
-	logfile := log.GetFileLogger("/tmp", "dofile2.log")
+	logfile := log.GetFileLogger("/tmp/dofile2.log")
 	logfile.SetLevel(logrus.DebugLevel)
 	logfile.Debug("debug level")
 }
 
+func Survey(f factory.Factory) {
+	l := f.GetLog()
+	answer, err := l.Question(&survey.QuestionOptions{
+		Question:     "Multiple sync configurations found. Which one do you want to use?",
+		DefaultValue: "1",
+		Options:      []string{"1", "2", "3"},
+	})
+	if err != nil {
+		l.Panic(err)
+	}
+	l.WriteString("\n")
+	l.Infof("an: %s", answer)
+}
+
 func main() {
+	f := factory.DefaultFactory()
+	Survey(f)
 	dolog()
 	dolog2()
 	flog := log.GetInstance()
 	flog.SetLevel(logrus.DebugLevel)
-	log.StartFileLogging("/tmp", "test.log")
+	log.StartFileLogging()
 	flog.StartWait("debug level")
 	flog.Debug("debug66666")
 	time.Sleep(time.Second * 2)

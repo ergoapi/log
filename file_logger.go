@@ -1,14 +1,19 @@
 package log
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 
+	"github.com/cockroachdb/errors"
+
+	"github.com/ergoapi/log/survey"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"k8s.io/apimachinery/pkg/util/runtime"
 )
+
+// Logdir specifies the relative path to the ergo logs
+var Logdir = "./.ergo/log/"
 
 var logs = map[string]Logger{}
 var logsMutext sync.Mutex
@@ -20,9 +25,7 @@ type fileLogger struct {
 }
 
 // GetFileLogger returns a logger instance for the specified filename
-func GetFileLogger(filedir, filename string) Logger {
-	filename = strings.TrimSpace(filename)
-
+func GetFileLogger(filename string) Logger {
 	logsMutext.Lock()
 	defer logsMutext.Unlock()
 
@@ -33,7 +36,7 @@ func GetFileLogger(filedir, filename string) Logger {
 		}
 		newLogger.logger.Formatter = &logrus.JSONFormatter{}
 		newLogger.logger.SetOutput(&lumberjack.Logger{
-			Filename:   fmt.Sprintf("%s/%s", filedir, filename),
+			Filename:   Logdir + filename + ".log",
 			MaxAge:     12,
 			MaxBackups: 4,
 			MaxSize:    10 * 1024 * 1024,
@@ -48,7 +51,7 @@ func GetFileLogger(filedir, filename string) Logger {
 
 // OverrideRuntimeErrorHandler overrides the standard runtime error handler that logs to stdout
 // with a file logger that logs all runtime.HandleErrors to errors.log
-func OverrideRuntimeErrorHandler(filedir string, discard bool) {
+func OverrideRuntimeErrorHandler(discard bool) {
 	overrideOnce.Do(func() {
 		if discard {
 			if len(runtime.ErrorHandlers) > 0 {
@@ -59,7 +62,7 @@ func OverrideRuntimeErrorHandler(filedir string, discard bool) {
 				}
 			}
 		} else {
-			errorLog := GetFileLogger(filedir, "errors")
+			errorLog := GetFileLogger("errors")
 			if len(runtime.ErrorHandlers) > 0 {
 				runtime.ErrorHandlers[0] = func(err error) {
 					errorLog.Errorf("Runtime error occurred: %s", err)
@@ -131,6 +134,14 @@ func (f *fileLogger) Donef(format string, args ...interface{}) {
 	f.logger.Infof(format, args...)
 }
 
+func (f *fileLogger) Fail(args ...interface{}) {
+	f.logger.Error(args...)
+}
+
+func (f *fileLogger) Failf(format string, args ...interface{}) {
+	f.logger.Errorf(format, args...)
+}
+
 func (f *fileLogger) Print(level logrus.Level, args ...interface{}) {
 	switch level {
 	case logrus.InfoLevel:
@@ -187,4 +198,8 @@ func (f *fileLogger) Write(message []byte) (int, error) {
 
 func (f *fileLogger) WriteString(message string) {
 	f.logger.Info(strings.TrimSuffix(message, "\n"))
+}
+
+func (f *fileLogger) Question(params *survey.QuestionOptions) (string, error) {
+	return "", errors.New("questions in file logger not supported")
 }

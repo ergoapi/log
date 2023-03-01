@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/ergoapi/log/survey"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,6 +15,7 @@ const (
 	warnFn
 	infoFn
 	debugFn
+	failFn
 	doneFn
 )
 
@@ -40,6 +42,9 @@ type Logger interface {
 	Done(args ...interface{})
 	Donef(format string, args ...interface{})
 
+	Fail(args ...interface{})
+	Failf(format string, args ...interface{})
+
 	StartWait(message string)
 	StopWait()
 
@@ -48,6 +53,8 @@ type Logger interface {
 
 	Write(message []byte) (int, error)
 	WriteString(message string)
+
+	Question(params *survey.QuestionOptions) (string, error)
 
 	SetLevel(level logrus.Level)
 	GetLevel() logrus.Level

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ergoapi/log/survey"
 	"github.com/sirupsen/logrus"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 )
@@ -108,6 +109,18 @@ func (s *unionLogger) Donef(format string, args ...interface{}) {
 	}
 }
 
+func (s *unionLogger) Fail(args ...interface{}) {
+	for _, l := range s.Loggers {
+		l.Fail(args...)
+	}
+}
+
+func (s *unionLogger) Failf(format string, args ...interface{}) {
+	for _, l := range s.Loggers {
+		l.Failf(format, args...)
+	}
+}
+
 func (s *unionLogger) Print(level logrus.Level, args ...interface{}) {
 	switch level {
 	case logrus.InfoLevel:
@@ -170,6 +183,21 @@ func (s *unionLogger) WriteString(message string) {
 	for _, l := range s.Loggers {
 		l.WriteString(message)
 	}
+}
+
+func (s *unionLogger) Question(params *survey.QuestionOptions) (string, error) {
+	errs := []error{}
+	for _, l := range s.Loggers {
+		answer, err := l.Question(params)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		return answer, nil
+	}
+
+	return "", utilerrors.NewAggregate(errs)
 }
 
 func (s *unionLogger) SetLevel(level logrus.Level) {

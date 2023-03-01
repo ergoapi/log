@@ -3,25 +3,27 @@ package log
 import (
 	"strings"
 
+	"github.com/ergoapi/log/survey"
 	"github.com/mgutz/ansi"
 	"github.com/sirupsen/logrus"
 )
 
 var defaultLog Logger = &stdoutLogger{
-	level: logrus.InfoLevel,
+	survey: survey.NewSurvey(),
+	level:  logrus.InfoLevel,
 }
 
 // Discard is a logger implementation that just discards every log statement
 var Discard = &DiscardLogger{}
 
 // StartFileLogging logs the output of the global logger to the file default.log
-func StartFileLogging(filedir, filename string) {
+func StartFileLogging() {
 	defaultLogStdout, ok := defaultLog.(*stdoutLogger)
 	if ok {
-		defaultLogStdout.fileLogger = GetFileLogger(filedir, filename)
+		defaultLogStdout.fileLogger = GetFileLogger("default")
 	}
 
-	OverrideRuntimeErrorHandler(filedir, false)
+	OverrideRuntimeErrorHandler(false)
 }
 
 // GetInstance returns the Logger instance
@@ -39,7 +41,7 @@ func writeColored(message string, color string) {
 	_, _ = defaultLog.Write([]byte(ansi.Color(message, color)))
 }
 
-//SetFakePrintTable is a testing tool that allows overwriting the function PrintTable
+// SetFakePrintTable is a testing tool that allows overwriting the function PrintTable
 func SetFakePrintTable(fake func(s Logger, header []string, values [][]string)) {
 	fakePrintTable = fake
 }

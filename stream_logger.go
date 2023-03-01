@@ -6,6 +6,8 @@ import (
 	"os"
 	"sync"
 
+	"github.com/cockroachdb/errors"
+	"github.com/ergoapi/log/survey"
 	"github.com/sirupsen/logrus"
 )
 
@@ -59,6 +61,10 @@ var fnStringTypeInformationMap = map[logFunctionType]*fnStringTypeInformation{
 	doneFn: {
 		tag:      "Done: ",
 		logLevel: logrus.InfoLevel,
+	},
+	failFn: {
+		tag:      "Fail: ",
+		logLevel: logrus.ErrorLevel,
 	},
 }
 
@@ -217,6 +223,22 @@ func (s *StreamLogger) Donef(format string, args ...interface{}) {
 	s.writeMessage(doneFn, fmt.Sprintf(format, args...)+"\n")
 }
 
+// Fail implements interface
+func (s *StreamLogger) Fail(args ...interface{}) {
+	s.logMutex.Lock()
+	defer s.logMutex.Unlock()
+
+	s.writeMessage(failFn, fmt.Sprintln(args...))
+}
+
+// Failf implements interface
+func (s *StreamLogger) Failf(format string, args ...interface{}) {
+	s.logMutex.Lock()
+	defer s.logMutex.Unlock()
+
+	s.writeMessage(failFn, fmt.Sprintf(format, args...)+"\n")
+}
+
 // Print implements interface
 func (s *StreamLogger) Print(level logrus.Level, args ...interface{}) {
 	switch level {
@@ -285,4 +307,9 @@ func (s *StreamLogger) WriteString(message string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// Question asks a new question
+func (s *StreamLogger) Question(params *survey.QuestionOptions) (string, error) {
+	return "", errors.New("questions in discard logger not supported")
 }

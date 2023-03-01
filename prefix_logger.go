@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	"time"
 
 	"github.com/ergoapi/util/exhash"
 	"github.com/mgutz/ansi"
@@ -64,19 +63,11 @@ func (s *prefixLogger) StopWait() {
 
 func (s *prefixLogger) writeMessage(level logrus.Level, message string) {
 	if s.GetLevel() >= level {
-		if s.GetLevel() == logrus.DebugLevel {
-			now := time.Now()
-			if s.color != "" {
-				s.WriteString(ansi.Color(formatInt(now.Hour())+":"+formatInt(now.Minute())+":"+formatInt(now.Second())+" ", "white+b") + ansi.Color(s.prefix, s.color) + message)
-			} else {
-				s.WriteString(formatInt(now.Hour()) + ":" + formatInt(now.Minute()) + ":" + formatInt(now.Second()) + " " + s.prefix + message)
-			}
+
+		if s.color != "" {
+			s.WriteString(ansi.Color(s.prefix, s.color) + message)
 		} else {
-			if s.color != "" {
-				s.WriteString(ansi.Color(s.prefix, s.color) + message)
-			} else {
-				s.WriteString(s.prefix + message)
-			}
+			s.WriteString(s.prefix + message)
 		}
 	}
 }
@@ -183,6 +174,20 @@ func (s *prefixLogger) Donef(format string, args ...interface{}) {
 	defer s.logMutex.Unlock()
 
 	s.writeMessage(logrus.InfoLevel, fmt.Sprintf(format, args...)+"\n")
+}
+
+func (s *prefixLogger) Fail(args ...interface{}) {
+	s.logMutex.Lock()
+	defer s.logMutex.Unlock()
+
+	s.writeMessage(logrus.ErrorLevel, fmt.Sprintln(args...))
+}
+
+func (s *prefixLogger) Failf(format string, args ...interface{}) {
+	s.logMutex.Lock()
+	defer s.logMutex.Unlock()
+
+	s.writeMessage(logrus.ErrorLevel, fmt.Sprintf(format, args...)+"\n")
 }
 
 func (s *prefixLogger) Print(level logrus.Level, args ...interface{}) {

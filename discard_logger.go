@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ergoapi/log/survey"
 	"github.com/sirupsen/logrus"
 )
 
@@ -70,6 +71,12 @@ func (d *DiscardLogger) Done(args ...interface{}) {}
 // Donef implements logger interface
 func (d *DiscardLogger) Donef(format string, args ...interface{}) {}
 
+// Fail implements logger interface
+func (d *DiscardLogger) Fail(args ...interface{}) {}
+
+// Failf implements logger interface
+func (d *DiscardLogger) Failf(format string, args ...interface{}) {}
+
 // Print implements logger interface
 func (d *DiscardLogger) Print(level logrus.Level, args ...interface{}) {}
 
@@ -95,3 +102,16 @@ func (d *DiscardLogger) Write(message []byte) (int, error) {
 
 // WriteString implements logger interface
 func (d *DiscardLogger) WriteString(message string) {}
+
+// Question asks a new question
+func (d *DiscardLogger) Question(params *survey.QuestionOptions) (string, error) {
+	return "", SurveyError{}
+}
+
+// SurveyError is used to identify errors where questions were asked in the discard logger
+type SurveyError struct{}
+
+// Error implements error interface
+func (s SurveyError) Error() string {
+	return "Asking questions is not possible in silenced mode"
+}
